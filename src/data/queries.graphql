@@ -1,0 +1,12 @@
+query getUsers {
+  users {
+    city
+    firstname
+    id
+    lastname
+    nr
+    phone
+    street
+    zip
+  }
+}
