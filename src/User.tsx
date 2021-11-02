@@ -28,7 +28,7 @@ const User: React.FC = () => {
           </p>
           <p>users from database:</p>
           <ul>
-            {data?.users.map((user, index) => {
+            {data?.user.map((user, index) => {
               return <li key={index}>hi {user.firstname}</li>;
             })}
           </ul>
