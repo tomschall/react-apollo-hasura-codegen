@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useGetUsersQuery } from './api/generated/graphql';
+import Logout from './Logout';
 
 const User: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -8,8 +9,12 @@ const User: React.FC = () => {
     variables: {},
   });
 
-  if (isLoading) {
+  if (isLoading || loading) {
     return <>'loading yeah...'</>;
+  }
+
+  if (error) {
+    console.log('error', error);
   }
 
   console.log('data', data);
@@ -18,10 +23,15 @@ const User: React.FC = () => {
     <>
       {isAuthenticated ? (
         <>
-          users from database:
-          {data?.users.map((user) => {
-            return <p>hi {user.firstname}</p>;
-          })}
+          <p>
+            <Logout />
+          </p>
+          <p>users from database:</p>
+          <ul>
+            {data?.users.map((user, index) => {
+              return <li key={index}>hi {user.firstname}</li>;
+            })}
+          </ul>
         </>
       ) : (
         <></>
