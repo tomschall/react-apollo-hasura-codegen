@@ -1,13 +1,5 @@
-query getUsers {
-  user {
+query MyQuery {
+  upload_file {
     id
-    firstname
-    lastname
-    street
-    nr
-    city
-    zip
-    phone
-    email
   }
 }

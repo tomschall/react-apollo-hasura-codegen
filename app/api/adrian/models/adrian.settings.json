@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "adrians",
+  "info": {
+    "name": "Adrian"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    }
+  }
+}

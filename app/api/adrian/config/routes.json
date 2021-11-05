@@ -1,0 +1,52 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/adrians",
+      "handler": "adrian.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/adrians/count",
+      "handler": "adrian.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/adrians/:id",
+      "handler": "adrian.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/adrians",
+      "handler": "adrian.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/adrians/:id",
+      "handler": "adrian.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/adrians/:id",
+      "handler": "adrian.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}
