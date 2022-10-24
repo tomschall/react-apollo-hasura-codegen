@@ -1,23 +1,23 @@
 import React from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
-import { useGetUsersQuery } from './api/generated/graphql';
+import { useUsersSubscription } from './api/generated/graphql';
 import Logout from './Logout';
+import { useRecoilState } from 'recoil';
+import { isAuthenticatedState } from './atom';
 
 const User: React.FC = () => {
-  const { isAuthenticated, isLoading } = useAuth0();
-  const { data, loading, error } = useGetUsersQuery({
+  const [isAuthenticated] = useRecoilState(isAuthenticatedState);
+
+  const { data, loading, error } = useUsersSubscription({
     variables: {},
   });
 
-  if (isLoading || loading) {
+  if (loading) {
     return <>'loading yeah...'</>;
   }
 
   if (error) {
     console.log('error', error);
   }
-
-  console.log('data', data);
 
   return (
     <>
@@ -28,7 +28,7 @@ const User: React.FC = () => {
           </p>
           <p>users from database:</p>
           <ul>
-            {data?.user.map((user, index) => {
+            {data?.users.map((user, index) => {
               return <li key={index}>hi {user.firstname}</li>;
             })}
           </ul>

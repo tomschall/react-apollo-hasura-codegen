@@ -1,6 +1,5 @@
 import React from 'react';
 import { getMainDefinition } from '@apollo/client/utilities';
-import { useAuth0 } from '@auth0/auth0-react';
 import {
   InMemoryCache,
   createHttpLink,
@@ -11,7 +10,9 @@ import {
 } from '@apollo/client';
 import { WebSocketLink, WebSocketParams } from '@apollo/client/link/ws';
 import { setContext } from '@apollo/client/link/context';
-import jwt_decode, { JwtPayload } from 'jwt-decode';
+import { JwtPayload } from 'jwt-decode';
+import { useRecoilState } from 'recoil';
+import { isAuthenticatedState } from './atom';
 
 interface Definition {
   kind: string;
@@ -35,35 +36,35 @@ interface ApolloHeaders {
 interface ApolloWrapperProps {}
 
 const ApolloWrapper: React.FC<ApolloWrapperProps> = ({ children }) => {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const [isAuthenticated, setIsAuthenticated] =
+    useRecoilState(isAuthenticatedState);
 
   const getHeaders = async () => {
     const headers = {} as ApolloHeaders;
-    if (isAuthenticated) {
-      const token: string = await getAccessTokenSilently();
-      parseTokenAndSetRoles(token);
-      headers.Authorization = `Bearer ${token}`;
-    }
+    const token: string | null = sessionStorage.getItem('jwtToken');
+    // parseTokenAndSetRoles(token);
+    headers.Authorization = `Bearer ${token}`;
+
     return headers;
   };
 
-  const parseTokenAndSetRoles = async (token: string) => {
-    const user: ParsedTokenUser = jwt_decode<JwtPayload>(token);
+  // const parseTokenAndSetRoles = async (token: string) => {
+  //   const user: ParsedTokenUser = jwt_decode<JwtPayload>(token);
 
-    if (
-      user.sub === undefined ||
-      user['https://hasura.io/jwt/claims'] === undefined ||
-      user['https://hasura.io/jwt/claims']['x-hasura-allowed-roles'] ===
-        undefined
-    ) {
-      return;
-    }
+  //   if (
+  //     user.sub === undefined ||
+  //     user['https://hasura.io/jwt/claims'] === undefined ||
+  //     user['https://hasura.io/jwt/claims']['x-hasura-allowed-roles'] ===
+  //       undefined
+  //   ) {
+  //     return;
+  //   }
 
-    sessionStorage.setItem(
-      user.sub,
-      user['https://hasura.io/jwt/claims']['x-hasura-allowed-roles'],
-    );
-  };
+  //   sessionStorage.setItem(
+  //     user.sub,
+  //     user['https://hasura.io/jwt/claims']['x-hasura-allowed-roles'],
+  //   );
+  // };
 
   const authMiddleware = setContext(async (operation, { originalHeaders }) => {
     return {

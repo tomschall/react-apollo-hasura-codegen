@@ -10,7 +10,7 @@ services:
     ports:
       - '${DOCKER_COMPOSE_EXTERNAL_POSTGRES_PORT}:5432'
   graphql-engine:
-    image: hasura/graphql-engine:v2.0.10
+    image: hasura/graphql-engine:v2.2.0
     ports:
       - '8080:8080'
     depends_on:

@@ -4,8 +4,12 @@
 .secrets
 
 # dependencies
-/node_modules
-/.pnp
+node_modules
+
+# app bundle
+app
+
+./.pnp
 .pnp.js
 
 # generated
@@ -32,7 +36,7 @@ yarn-error.log*
 *.log
 
 # nestjs microservice
-/nestjs
+nestjs
 
 # nightwatch tests
 tests_output

@@ -1,23 +1,31 @@
-import React from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import React, { useEffect } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import PrivateRoute from './PrivateRoute';
 import User from './User';
 import Login from './Login';
+import { isAuthenticatedState } from './atom';
+import { useRecoilState } from 'recoil';
 
 const App: React.FC = () => {
-  const { isAuthenticated, isLoading } = useAuth0();
+  const [isAuthenticated, setIsAuthenticated] =
+    useRecoilState(isAuthenticatedState);
 
-  if (isLoading) {
-    return <>'loading...'</>;
-  }
+  useEffect(() => {
+    const hasToken: boolean = sessionStorage.getItem('jwtToken') ? true : false;
+    setIsAuthenticated(hasToken);
+  }, [setIsAuthenticated]);
+
+  console.log('isAuthenticated', isAuthenticated);
+
+  // if (isLoading) {
+  //   return <>'loading...'</>;
+  // }
 
   return (
     <>
       {isAuthenticated ? (
         <Switch>
           <Redirect exact from="/" to="/user" />
-          <PrivateRoute path="/user" component={User} />
+          <Route path="/user" component={User} />
           <Redirect to="/404-not-found" />
         </Switch>
       ) : (

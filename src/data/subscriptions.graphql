@@ -1,0 +1,13 @@
+subscription users {
+  users {
+    id
+    firstname
+    lastname
+    street
+    nr
+    zip
+    city
+    phone
+    note
+  }
+}

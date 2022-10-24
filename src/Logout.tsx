@@ -1,16 +1,16 @@
 import React from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useRecoilState } from 'recoil';
+import { isAuthenticatedState } from './atom';
 
 const Logout: React.FC = () => {
-  const { logout } = useAuth0();
+  const [isAuthenticated, setIsAuthenticated] =
+    useRecoilState(isAuthenticatedState);
 
   return (
     <>
       <button
         onClick={() => {
-          logout({
-            returnTo: process.env.REACT_APP_AUTH0_LOGOUT_URL,
-          });
+          setIsAuthenticated(false);
           window.sessionStorage.clear();
         }}
         aria-label="Logout"
