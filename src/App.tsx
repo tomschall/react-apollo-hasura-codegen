@@ -4,14 +4,38 @@ import User from './User';
 import Login from './Login';
 import { isAuthenticatedState } from './atom';
 import { useRecoilState } from 'recoil';
+import axios from 'axios';
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] =
     useRecoilState(isAuthenticatedState);
 
   useEffect(() => {
-    const hasToken: boolean = sessionStorage.getItem('jwtToken') ? true : false;
-    setIsAuthenticated(hasToken);
+    console.log('useEffect');
+    const token = sessionStorage.getItem('jwtToken');
+
+    if (!token) return setIsAuthenticated(false);
+
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
+    };
+
+    axios
+      .get('http://localhost:3000/isAuthenticated', {
+        headers,
+      })
+      .then((res: any) => {
+        console.log('res', res);
+        if (res.data) {
+          setIsAuthenticated(true);
+        }
+      })
+      .catch((err: any) => {
+        console.log('err', err);
+        setIsAuthenticated(false);
+        window.sessionStorage.removeItem('jwtToken');
+      });
   }, [setIsAuthenticated]);
 
   console.log('isAuthenticated', isAuthenticated);

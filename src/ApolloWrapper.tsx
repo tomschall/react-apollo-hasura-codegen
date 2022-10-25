@@ -41,10 +41,11 @@ const ApolloWrapper: React.FC<ApolloWrapperProps> = ({ children }) => {
 
   const getHeaders = async () => {
     const headers = {} as ApolloHeaders;
-    const token: string | null = sessionStorage.getItem('jwtToken');
-    // parseTokenAndSetRoles(token);
-    headers.Authorization = `Bearer ${token}`;
-
+    if (isAuthenticated) {
+      const token: string | null = sessionStorage.getItem('jwtToken');
+      // parseTokenAndSetRoles(token);
+      headers.Authorization = `Bearer ${token}`;
+    }
     return headers;
   };
 
