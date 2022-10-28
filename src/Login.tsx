@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { isAuthenticatedState } from './atom';
 import { useRecoilState } from 'recoil';
@@ -7,16 +7,22 @@ const Login: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] =
     useRecoilState(isAuthenticatedState);
 
+  const [errorMessages, setErrorMessages] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
   const headers = {
     'Content-Type': 'application/json',
   };
 
-  const data = {
-    username: 'roli',
-    password: 'fickenwiedermaltest',
-  };
+  const login = async (event: any) => {
+    event.preventDefault();
 
-  const login = async () => {
+    const data = {
+      username,
+      password,
+    };
+
     axios
       .post('http://localhost:3000/auth/login', data, {
         headers: headers,
@@ -30,15 +36,42 @@ const Login: React.FC = () => {
       })
       .catch((err: any) => {
         console.log('err', err);
+        setErrorMessages(true);
       });
   };
 
-  return (
-    <>
-      <button onClick={login} aria-label="Login">
-        Login
-      </button>
-    </>
+  const renderErrorMessage = () =>
+    errorMessages && <div className="error">invalid username or password</div>;
+
+  return !sessionStorage.getItem('jwtToken') && !isAuthenticated ? (
+    <div className="form">
+      {renderErrorMessage()}
+      <form onSubmit={login}>
+        <div className="input-container">
+          <label>Username </label>
+          <input
+            type="text"
+            name="username"
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+        <div className="input-container">
+          <label>Password </label>
+          <input
+            type="password"
+            name="password"
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <div className="button-container">
+          <input type="submit" />
+        </div>
+      </form>
+    </div>
+  ) : (
+    <></>
   );
 };
 

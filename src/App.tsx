@@ -12,37 +12,37 @@ const App: React.FC = () => {
 
   useEffect(() => {
     console.log('useEffect');
-    const token = sessionStorage.getItem('jwtToken');
 
-    if (!token) return setIsAuthenticated(false);
+    const checkForValidJWT = async () => {
+      const token = sessionStorage.getItem('jwtToken');
 
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + token,
-    };
+      if (!token) return setIsAuthenticated(false);
 
-    axios
-      .get('http://localhost:3000/isAuthenticated', {
-        headers,
-      })
-      .then((res: any) => {
-        console.log('res', res);
-        if (res.data) {
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      };
+      try {
+        const isAuthenticated = await axios.get(
+          'http://localhost:3000/isAuthenticated',
+          {
+            headers,
+          },
+        );
+        if (isAuthenticated) {
           setIsAuthenticated(true);
         }
-      })
-      .catch((err: any) => {
-        console.log('err', err);
+      } catch (error) {
+        console.log('error', error);
         setIsAuthenticated(false);
         window.sessionStorage.removeItem('jwtToken');
-      });
+      }
+    };
+
+    checkForValidJWT();
   }, [setIsAuthenticated]);
 
   console.log('isAuthenticated', isAuthenticated);
-
-  // if (isLoading) {
-  //   return <>'loading...'</>;
-  // }
 
   return (
     <>
