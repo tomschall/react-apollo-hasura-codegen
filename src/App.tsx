@@ -14,28 +14,53 @@ const App: React.FC = () => {
     console.log('useEffect');
 
     const checkForValidJWT = async () => {
-      const token = sessionStorage.getItem('jwtToken');
+      let token = sessionStorage.getItem('jwtToken');
+      const refreshToken = sessionStorage.getItem('jwtRefreshToken');
 
-      if (!token) return setIsAuthenticated(false);
-
-      const headers = {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token,
-      };
       try {
+        const headers = {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token,
+        };
+
         const isAuthenticated = await axios.get(
-          'http://localhost:3000/isAuthenticated',
+          'http://localhost:3000/auth/isAuthenticated',
           {
             headers,
           },
         );
+
+        console.log('isAuthenticated response', isAuthenticated);
+
         if (isAuthenticated) {
           setIsAuthenticated(true);
+          return;
+        }
+      } catch (err) {
+        console.log('err', err);
+      }
+
+      try {
+        const headers = {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + refreshToken,
+        };
+
+        const tokens = await axios.get('http://localhost:3000/auth/refresh', {
+          headers,
+        });
+
+        if (tokens) {
+          sessionStorage.setItem('jwtToken', tokens.data.accessToken);
+          sessionStorage.setItem('jwtRefreshToken', tokens.data.refreshToken);
+          setIsAuthenticated(true);
+          return;
         }
       } catch (error) {
+        console.log('refresh tokens error');
         console.log('error', error);
         setIsAuthenticated(false);
-        window.sessionStorage.removeItem('jwtToken');
+        window.sessionStorage.clear();
       }
     };
 
