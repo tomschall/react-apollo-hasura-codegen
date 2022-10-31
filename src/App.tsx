@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import User from './User';
 import Login from './Login';
+import Sign from './Sign';
 import { isAuthenticatedState } from './atom';
 import { useRecoilState } from 'recoil';
 import axios from 'axios';
@@ -79,6 +80,7 @@ const App: React.FC = () => {
         </Switch>
       ) : (
         <Switch>
+          <Route path="/signup" component={Sign} />
           <Route path="/" component={Login} />
           <Redirect to="/" />
         </Switch>

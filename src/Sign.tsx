@@ -11,22 +11,24 @@ const Login: React.FC = () => {
   const [errorMessages, setErrorMessages] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const history = useHistory();
 
   const headers = {
     'Content-Type': 'application/json',
   };
 
-  const login = async (event: any) => {
+  const signup = async (event: any) => {
     event.preventDefault();
 
     const data = {
       username,
       password,
+      name,
     };
 
     axios
-      .post('http://localhost:3000/auth/signin', data, {
+      .post('http://localhost:3000/auth/signup', data, {
         headers: headers,
       })
       .then((res: any) => {
@@ -50,7 +52,16 @@ const Login: React.FC = () => {
   return !sessionStorage.getItem('jwtToken') && !isAuthenticated ? (
     <div className="form">
       {renderErrorMessage()}
-      <form onSubmit={login}>
+      <form onSubmit={signup}>
+        <div className="input-container">
+          <label>Name</label>
+          <input
+            type="text"
+            name="name"
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </div>
         <div className="input-container">
           <label>Username</label>
           <input
