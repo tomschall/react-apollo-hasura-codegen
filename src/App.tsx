@@ -16,44 +16,45 @@ const App: React.FC = () => {
 
     const checkForValidJWT = async () => {
       let token = sessionStorage.getItem('jwtToken');
-      const refreshToken = sessionStorage.getItem('jwtRefreshToken');
 
-      try {
-        const headers = {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + token,
-        };
+      if (token) {
+        try {
+          const headers = {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + token,
+          };
 
-        const isAuthenticated = await axios.get(
-          'http://localhost:3000/auth/isAuthenticated',
-          {
-            headers,
-          },
-        );
+          const isAuthenticated = await axios.get(
+            'http://localhost:3000/auth/isAuthenticated',
+            {
+              headers,
+            },
+          );
 
-        console.log('isAuthenticated response', isAuthenticated);
+          console.log('isAuthenticated response', isAuthenticated);
 
-        if (isAuthenticated) {
-          setIsAuthenticated(true);
-          return;
+          if (isAuthenticated) {
+            setIsAuthenticated(true);
+            return;
+          }
+        } catch (err) {
+          console.log('err', err);
         }
-      } catch (err) {
-        console.log('err', err);
       }
 
       try {
         const headers = {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + refreshToken,
         };
 
         const tokens = await axios.get('http://localhost:3000/auth/refresh', {
           headers,
+          withCredentials: true,
         });
 
         if (tokens) {
-          sessionStorage.setItem('jwtToken', tokens.data.accessToken);
-          sessionStorage.setItem('jwtRefreshToken', tokens.data.refreshToken);
+          console.log('tokens', tokens);
+          sessionStorage.setItem('jwtToken', tokens.data);
           setIsAuthenticated(true);
           return;
         }

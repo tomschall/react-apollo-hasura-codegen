@@ -28,12 +28,12 @@ const Login: React.FC = () => {
     axios
       .post('http://localhost:3000/auth/signin', data, {
         headers: headers,
+        withCredentials: true,
       })
       .then((res: any) => {
         console.log('res', res);
-        if (res.data.accessToken && res.data.refreshToken) {
-          sessionStorage.setItem('jwtToken', res.data.accessToken);
-          sessionStorage.setItem('jwtRefreshToken', res.data.refreshToken);
+        if (res.data) {
+          sessionStorage.setItem('jwtToken', res.data);
           setIsAuthenticated(true);
           history.push('/user');
         }
