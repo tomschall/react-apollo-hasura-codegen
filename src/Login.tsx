@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { isAuthenticatedState } from './atom';
+import { isAuthenticatedState, accessTokenState } from './atom';
 import { useRecoilState } from 'recoil';
 import { useHistory } from 'react-router';
 
 const Login: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] =
     useRecoilState(isAuthenticatedState);
+
+  const [accessToken, setAccessToken] =
+    useRecoilState<string>(accessTokenState);
 
   const [errorMessages, setErrorMessages] = useState(false);
   const [username, setUsername] = useState('');
@@ -33,7 +36,7 @@ const Login: React.FC = () => {
       .then((res: any) => {
         console.log('res', res);
         if (res.data) {
-          sessionStorage.setItem('jwtToken', res.data);
+          setAccessToken(res.data);
           setIsAuthenticated(true);
           history.push('/user');
         }

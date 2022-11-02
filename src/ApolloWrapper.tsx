@@ -12,7 +12,7 @@ import { WebSocketLink, WebSocketParams } from '@apollo/client/link/ws';
 import { setContext } from '@apollo/client/link/context';
 import { JwtPayload } from 'jwt-decode';
 import { useRecoilState } from 'recoil';
-import { isAuthenticatedState } from './atom';
+import { accessTokenState, isAuthenticatedState } from './atom';
 
 interface Definition {
   kind: string;
@@ -24,6 +24,8 @@ interface Claims {
     'x-hasura-allowed-roles'?: string;
     'x-hasura-default-role'?: string;
     'x-hasura-user-id'?: string;
+    'x-hasura-org-id'?: string;
+    'x-hasura-username'?: string;
   };
 }
 
@@ -39,12 +41,13 @@ const ApolloWrapper: React.FC<ApolloWrapperProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] =
     useRecoilState(isAuthenticatedState);
 
+  const [accessToken, setAccessToken] =
+    useRecoilState<string>(accessTokenState);
+
   const getHeaders = async () => {
     const headers = {} as ApolloHeaders;
     if (isAuthenticated) {
-      const token: string | null = sessionStorage.getItem('jwtToken');
-      // parseTokenAndSetRoles(token);
-      headers.Authorization = `Bearer ${token}`;
+      headers.Authorization = `Bearer ${accessToken}`;
     }
     return headers;
   };
